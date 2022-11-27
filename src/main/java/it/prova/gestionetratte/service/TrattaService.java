@@ -17,4 +17,6 @@ public interface TrattaService {
 	Tratta inserisciNuovo(Tratta trattaInstance);
 
 	void rimuovi(Long id);
+	
+	List<Tratta> findByCodiceAndDescrizione(String codice, String descrizione);
 }

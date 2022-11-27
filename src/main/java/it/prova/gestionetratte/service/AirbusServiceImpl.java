@@ -65,4 +65,9 @@ public class AirbusServiceImpl  implements AirbusService{
 		repository.deleteById(idToRemove);
 
 	}
+	
+	@Override
+	public Airbus findByCodiceAndDescrizione(String codice, String descrizione) {
+		return repository.findByCodiceAndDescrizione(codice, descrizione);
+	}
 }

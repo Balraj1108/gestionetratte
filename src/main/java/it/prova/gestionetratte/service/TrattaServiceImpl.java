@@ -5,10 +5,12 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import it.prova.gestionetratte.model.Tratta;
 import it.prova.gestionetratte.repository.tratta.TrattaRepository;
 
+@Service
 public class TrattaServiceImpl implements TrattaService {
 
 	@Autowired
@@ -57,6 +59,11 @@ public class TrattaServiceImpl implements TrattaService {
 
 		repository.deleteById(idToRemove);
 
+	}
+	
+	@Override
+	public List<Tratta> findByCodiceAndDescrizione(String codice, String descrizione) {
+		return repository.findByCodiceAndDescrizione(codice, descrizione);
 	}
 
 }
