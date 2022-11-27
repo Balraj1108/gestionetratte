@@ -1,5 +1,6 @@
 package it.prova.gestionetratte.web.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -87,4 +88,52 @@ public class AirbusController {
 		Airbus airbusAggiornato = airbusService.aggiorna(airbusInput.buildAirbusModel());
 		return AirbusDTO.buildAirbusDTOFromModel(airbusAggiornato, false, false);
 	}
+	
+	@GetMapping("/listaAirbusEvidenziandoSovrapposizioni")
+	public List<AirbusDTO> getListaAirbusEvidenziandoSovrapposizioni() {
+		return airbusService.findListaAirbusEvidenziandoSovrapposizioni();
+	}
+	
+	
+	/*@GetMapping("/listaAirbusEvidenziandoSovrapposizioni")
+	public List<AirbusDTO> listAllConSovrapposizione() {
+		List<Airbus> tutti = airbusService.listAllElementsEager();
+		List<AirbusDTO> result = new ArrayList<>();
+
+		tutti.stream().forEach(airbus -> {
+			AirbusDTO temp;
+			if (this.hasSovrapposizioni(airbus)) {
+				temp = AirbusDTO.buildAirbusDTOFromModel(airbus, false, true);
+			} else {
+				temp = AirbusDTO.buildAirbusDTOFromModel(airbus, false, false);
+			}
+			result.add(temp);
+		});
+		return result;
+	}
+	
+	private boolean hasSovrapposizioni(Airbus airbus) {
+		List<Tratta> tratte = airbus.getTratte();
+
+		for (int i = 0; i < tratte.size(); i++) {
+			Tratta tratta1 = tratte.get(i);
+			for (int j = i; j < tratte.size(); j++) {
+				Tratta tratta2 = tratte.get(j);
+				if (i != j) {
+					
+					if (tratta1.getData().equals(tratta2.getData())) {
+						if (((tratta1.getOraDecollo().isBefore(tratta2.getOraDecollo()))
+								&& (tratta1.getOraAtterraggio().isAfter(tratta2.getOraDecollo())))
+								|| ((tratta1.getOraDecollo().isBefore(tratta2.getOraAtterraggio()))
+										&& (tratta1.getOraAtterraggio().isAfter(tratta2.getOraAtterraggio())))) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}*/
+	
 }
