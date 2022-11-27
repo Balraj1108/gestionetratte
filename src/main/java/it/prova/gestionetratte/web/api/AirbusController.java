@@ -20,6 +20,9 @@ import it.prova.gestionetratte.dto.AirbusDTO;
 import it.prova.gestionetratte.model.Airbus;
 import it.prova.gestionetratte.model.Tratta;
 import it.prova.gestionetratte.service.AirbusService;
+import it.prova.gestionetratte.web.api.exception.AirbusNotFoundException;
+import it.prova.gestionetratte.web.api.exception.CustomValidationException;
+import it.prova.gestionetratte.web.api.exception.IdNotNullForInsertException;
 
 @RestController
 @RequestMapping("api/airbus")
@@ -32,17 +35,17 @@ public class AirbusController {
 	public List<AirbusDTO> getAll() {
 		// senza DTO qui hibernate dava il problema del N + 1 SELECT
 		// (probabilmente dovuto alle librerie che serializzano in JSON)
-		return AirbusDTO.createAirbusDTOListFromModelList(airbusService.listAllElementsEager(), true);
+		return AirbusDTO.createAirbusDTOListFromModelList(airbusService.listAllElementsEager(), true, false);
 	}
 
 	@GetMapping("/{id}")
 	public AirbusDTO findById(@PathVariable(value = "id", required = true) long id) {
 		Airbus airbus = airbusService.caricaSingoloElementoConTratte(id);
 
-		/*if (airbus == null)
-			throw new AirbusNotFoundException("Airbus not found con id: " + id);*/
+		if (airbus == null)
+			throw new AirbusNotFoundException("Airbus not found con id: " + id);
 
-		return AirbusDTO.buildAirbusDTOFromModel(airbus, true);
+		return AirbusDTO.buildAirbusDTOFromModel(airbus, true, false);
 	}
 
 	// gli errori di validazione vengono mostrati con 400 Bad Request ma
@@ -52,11 +55,11 @@ public class AirbusController {
 	public AirbusDTO createNew(@Valid @RequestBody AirbusDTO airbusInput) {
 		// se mi viene inviato un id jpa lo interpreta come update ed a me (producer)
 		// non sta bene
-		/*if (airbusInput.getId() != null)
-			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");*/
+		if (airbusInput.getId() != null)
+			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");
 
 		Airbus airbusInserito = airbusService.inserisciNuovo(airbusInput.buildAirbusModel());
-		return AirbusDTO.buildAirbusDTOFromModel(airbusInserito, false);
+		return AirbusDTO.buildAirbusDTOFromModel(airbusInserito, false, false);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -70,7 +73,7 @@ public class AirbusController {
 		Airbus airbus = airbusService.caricaSingoloElemento(id);
 		Airbus airbusConTratte = airbusService.caricaSingoloElementoConTratte(id);
 
-	/*	if (airbus == null)
+		if (airbus == null)
 			throw new AirbusNotFoundException("Airbus not found con id: " + id);
 		
 		if(airbusConTratte != null && airbusConTratte.getTratte().size() > 0) {
@@ -78,10 +81,10 @@ public class AirbusController {
 				if(airbusInput.getDataInizioServizio().isAfter(item.getData()))
 					throw new CustomValidationException("Non e' possibile inserire la data di inizio servizio maggiore alla data di qualsiasi sua tratta.");
 			}
-		}*/
+		}
 
 		airbusInput.setId(id);
 		Airbus airbusAggiornato = airbusService.aggiorna(airbusInput.buildAirbusModel());
-		return AirbusDTO.buildAirbusDTOFromModel(airbusAggiornato, false);
+		return AirbusDTO.buildAirbusDTOFromModel(airbusAggiornato, false, false);
 	}
 }

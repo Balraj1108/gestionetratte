@@ -21,6 +21,8 @@ import it.prova.gestionetratte.model.Airbus;
 import it.prova.gestionetratte.model.Tratta;
 import it.prova.gestionetratte.service.AirbusService;
 import it.prova.gestionetratte.service.TrattaService;
+import it.prova.gestionetratte.web.api.exception.IdNotNullForInsertException;
+import it.prova.gestionetratte.web.api.exception.TrattaNotFoundException;
 
 @RestController
 @RequestMapping("api/tratta")
@@ -41,8 +43,8 @@ public class TrattaController {
 	public TrattaDTO findById(@PathVariable(value = "id", required = true) long id) {
 		Tratta tratta = trattaService.caricaSingoloElementoEager(id);
 
-		/*if (tratta == null)
-			throw new TrattaNotFoundException("Tratta not found con id: " + id);*/
+		if (tratta == null)
+			throw new TrattaNotFoundException("Tratta not found con id: " + id);
 
 		return TrattaDTO.buildTrattaDTOFromModel(tratta, true);
 	}
@@ -53,8 +55,8 @@ public class TrattaController {
 	public TrattaDTO createNew(@Valid @RequestBody TrattaDTO trattaInput) {
 		// se mi viene inviato un id jpa lo interpreta come update ed a me (producer)
 		// non sta bene
-		/*if (trattaInput.getId() != null)
-			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");*/
+		if (trattaInput.getId() != null)
+			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");
 		
 		Airbus airbusPerValidazioni = airbusService.caricaSingoloElemento(trattaInput.getAirbusDTO().getId());
 		
@@ -80,4 +82,10 @@ public class TrattaController {
 		Tratta trattaAggiornata = trattaService.aggiorna(trattaInput.buildTrattaModel());
 		return TrattaDTO.buildTrattaDTOFromModel(trattaAggiornata, false);
 	}
+	
+	@GetMapping("/concludiTratte")
+	public void concludiTratte() {
+		trattaService.concludiTratte();
+	}
+
 }

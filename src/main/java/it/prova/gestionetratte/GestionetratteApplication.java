@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import it.prova.gestionetratte.model.Airbus;
+import it.prova.gestionetratte.model.StatoTratta;
 import it.prova.gestionetratte.model.Tratta;
 import it.prova.gestionetratte.service.AirbusService;
 import it.prova.gestionetratte.service.TrattaService;
@@ -40,7 +41,7 @@ public class GestionetratteApplication implements CommandLineRunner {
 		Tratta tratta = new Tratta("dsa5", "Roma-Milano",
 				LocalDate.parse("01-01-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),
 				LocalTime.parse("15.00", DateTimeFormatter.ofPattern("HH.mm")),
-				LocalTime.parse("18.00", DateTimeFormatter.ofPattern("HH.mm")), airbus);
+				LocalTime.parse("18.00", DateTimeFormatter.ofPattern("HH.mm")), StatoTratta.ATTIVA, airbus);
 		if (trattaService.findByCodiceAndDescrizione(tratta.getCodice(), tratta.getDescrizione()).isEmpty())
 			trattaService.inserisciNuovo(tratta);
 
@@ -57,7 +58,7 @@ public class GestionetratteApplication implements CommandLineRunner {
 		Tratta tratta2 = new Tratta("223bx", "Torino-Londra",
 				LocalDate.parse("12-12-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),
 				LocalTime.parse("10.00", DateTimeFormatter.ofPattern("HH.mm")),
-				LocalTime.parse("13.00", DateTimeFormatter.ofPattern("HH.mm")), airbus2);
+				LocalTime.parse("13.00", DateTimeFormatter.ofPattern("HH.mm")), StatoTratta.ATTIVA, airbus2);
 		if (trattaService.findByCodiceAndDescrizione(tratta2.getCodice(), tratta2.getDescrizione()).isEmpty())
 			trattaService.inserisciNuovo(tratta2);
 
